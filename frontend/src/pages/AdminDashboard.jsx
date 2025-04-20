@@ -9,12 +9,14 @@ function AdminDashboard() {
   const [newTestName, setNewTestName] = useState('');
   const [individualMarks, setIndividualMarks] = useState(1);
   const [negativeMarking, setNegativeMarking] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [questionData, setQuestionData] = useState({
     testId: '',
     question: '',
     options: ['', '', '', ''],
     answer: '0',
     difficulty: 'easy',
+    image: null,
   });
   const [csvFile, setCsvFile] = useState(null);
   const [activeSubTab, setActiveSubTab] = useState('');
@@ -40,13 +42,13 @@ function AdminDashboard() {
     }));
     setCsvFile(null);
     setShowCreateForm(false);
-    setActiveSubTab(''); // Reset sub-tab when a new test is selected
+    setActiveSubTab(''); 
   };
 
   const handleCreateTest = async () => {
     if (newTestName.trim() === '') return;
 
-    const newTest = { name: newTestName, individualMarks, negativeMarking };
+    const newTest = { name: newTestName, individualMarks, negativeMarking, duration };
     try {
       const response = await fetch(`${BACKEND_URL}/api/tests/add`, {
         method: 'POST',
@@ -59,6 +61,7 @@ function AdminDashboard() {
         setNewTestName('');
         setIndividualMarks(1);
         setNegativeMarking(0);
+        setDuration(0);
         setShowCreateForm(false);
       } else {
         alert(result.error || 'Failed to create test');
@@ -86,31 +89,59 @@ function AdminDashboard() {
     }));
   };
 
+  const handleImageChange = (e) => {
+    setQuestionData((prevData) => ({
+      ...prevData,
+      image: e.target.files[0],
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { question, options, answer, difficulty, testId } = questionData;
-    const newQuestion = {
-      testId,
-      question,
-      options,
-      answer: parseInt(answer),
-      difficulty,
-    };
+    if (!selectedTestId) {
+      alert('Please select a test first.');
+      return;
+    }
+    if (questionData.options.length !== 4) {
+      alert('There should be exactly 4 options.');
+      return;
+    }
+    if (!questionData.question.trim()) {
+      alert('Question text is required.');
+      return;
+    }
+    if (!questionData.answer) {
+      alert('Answer is required.');
+      return;
+    }
+    if (!questionData.difficulty) {
+      alert('Difficulty is required.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('testId', selectedTestId);
+    formData.append('question', questionData.question);
+    formData.append('options', JSON.stringify(questionData.options));
+    formData.append('answer', questionData.answer);
+    formData.append('difficulty', questionData.difficulty);
+    if (questionData.image) formData.append('image', questionData.image);
+
     try {
       const response = await fetch(`${BACKEND_URL}/api/questions/add`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuestion),
+        body: formData,
       });
       const result = await response.json();
       if (response.ok) {
         alert('Question added successfully!');
         setQuestionData({
-          testId: '',
+          testId: selectedTestId,
           question: '',
           options: ['', '', '', ''],
           answer: '0',
           difficulty: 'easy',
+          image: null,
         });
       } else {
         alert(result.error || 'Failed to add question');
@@ -225,6 +256,16 @@ function AdminDashboard() {
                       min="0"
                     />
                   </label>
+                  <label className="label">
+                    Duration (minutes):
+                    <input
+                      type="number"
+                      value={duration}
+                      onChange={(e) => setDuration(e.target.value)}
+                      className="input-field"
+                      min="1"
+                    />
+                  </label>
                   <div className="button-group">
                     <button onClick={handleCreateTest} className="btn-primary">
                       Create Test
@@ -305,6 +346,16 @@ function AdminDashboard() {
                   ))}
                 </label>
                 <label className="label">
+                  Image (Optional):
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    name="image"
+                    className="input-field"
+                  />
+                </label>
+                <label className="label">
                   Correct Answer:
                   <select
                     name="answer"
@@ -325,6 +376,7 @@ function AdminDashboard() {
                     name="difficulty"
                     value={questionData.difficulty}
                     onChange={handleInputChange}
+                    required
                     className="input-field"
                   >
                     <option value="easy">Easy</option>

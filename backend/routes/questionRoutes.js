@@ -1,28 +1,110 @@
 import express from 'express';
 import multer from 'multer';
 import csv from 'csvtojson';
+import path from 'path';
+import fs from 'fs';
 import Question from '../models/questions.js';
 
 const router = express.Router();
 
-// Multer config to handle file upload in memory
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+// Multer config to handle file upload in memory for bulk uploads and disk storage for images
+const memoryStorage = multer.memoryStorage();
+const diskStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = './uploads/questions';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(`Directory created: ${dir}`);
+    } else {
+      console.log(`Directory exists: ${dir}`);
+    }
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueFilename = `${Date.now()}-${file.originalname}`;
+    console.log(`Saving file as: ${uniqueFilename}`);
+    cb(null, uniqueFilename);
+  },
+});
+const uploadMemory = multer({ storage: memoryStorage });
+const uploadDisk = multer({ storage: diskStorage });
 
-// POST route to add a new question
-router.post('/add', async (req, res) => {
+// POST route to add a new question with optional image
+router.post('/add', uploadDisk.single('image'), async (req, res) => {
   try {
-    const newQuestion = new Question(req.body);
+    let testId, question, options, answer, difficulty;
+
+    // Handle data from FormData or JSON
+    if (req.body.testId) {
+      testId = req.body.testId;
+      question = req.body.question;
+      options = req.body.options;
+      answer = req.body.answer;
+      difficulty = req.body.difficulty;
+    } else {
+      testId = req.body.testId;
+      question = req.body.question;
+      options = req.body.options;
+      answer = req.body.answer;
+      difficulty = req.body.difficulty;
+    }
+
+    // Validate required fields
+    if (!testId || !question || !answer || !difficulty) {
+      return res.status(400).json({ error: 'testId, question, answer, and difficulty are required.' });
+    }
+
+    // Validate and parse options
+    let parsedOptions;
+    try {
+      parsedOptions = JSON.parse(options);
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid options format. Must be a JSON array.' });
+    }
+    if (!Array.isArray(parsedOptions) || parsedOptions.length !== 4) {
+      return res.status(400).json({ error: 'There should be exactly 4 options.' });
+    }
+
+    // Validate answer
+    const answerIndex = parseInt(answer, 10);
+    if (isNaN(answerIndex) || answerIndex < 0 || answerIndex > 3) {
+      return res.status(400).json({ error: 'Answer must be a number between 0 and 3.' });
+    }
+
+    // Validate difficulty
+    if (!['easy', 'medium', 'hard'].includes(difficulty)) {
+      return res.status(400).json({ error: 'Difficulty must be easy, medium, or hard.' });
+    }
+
+    // Create new question with optional image
+    const questionData = {
+      testId,
+      question,
+      options: parsedOptions,
+      answer: answerIndex,
+      difficulty,
+    };
+    if (req.file) {
+      questionData.imageUrl = `/uploads/questions/${req.file.filename}`;
+      console.log(`Image saved at: ${path.join('./uploads/questions', req.file.filename)}`);
+    } else {
+      console.log('No image uploaded');
+    }
+
+    const newQuestion = new Question(questionData);
     await newQuestion.save();
-    res.status(201).json({ message: 'Question added successfully!' });
+    res.status(201).json({ message: 'Question added successfully!', questionId: newQuestion._id });
   } catch (error) {
-    console.error(error.message);
+    console.error('Error in /add:', error.message);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
+    }
     res.status(500).json({ error: 'Failed to add question.' });
   }
 });
 
 // POST route to bulk upload questions via CSV
-router.post('/upload-csv', upload.single('file'), async (req, res) => {
+router.post('/upload-csv', uploadMemory.single('file'), async (req, res) => {
   try {
     const { testId } = req.query;
     if (!testId) {
@@ -33,11 +115,11 @@ router.post('/upload-csv', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded.' });
     }
 
+    // Process CSV in memory
     const csvString = req.file.buffer.toString('utf-8');
     const questionsArray = await csv().fromString(csvString);
 
     const formattedQuestions = questionsArray.map(q => {
-      // Use individual option columns
       const options = [
         q.option1 || 'N/A',
         q.option2 || 'N/A',
@@ -47,13 +129,13 @@ router.post('/upload-csv', upload.single('file'), async (req, res) => {
 
       let answerIndex = parseInt(q.answer, 10);
       if (isNaN(answerIndex) || answerIndex < 0 || answerIndex > 3) {
-        answerIndex = 0; // Default to 0 if invalid
+        answerIndex = 0;
       }
 
       return {
         testId,
         question: q.question,
-        options: options,
+        options,
         answer: answerIndex,
         difficulty: q.difficulty || 'easy',
         createdAt: new Date(q.createdAt) || new Date(),
@@ -63,6 +145,7 @@ router.post('/upload-csv', upload.single('file'), async (req, res) => {
     });
 
     await Question.insertMany(formattedQuestions);
+    console.log('CSV processed and discarded, no file saved to disk');
     res.status(201).json({ message: 'Questions uploaded successfully!' });
   } catch (error) {
     console.error(error.message);
@@ -71,7 +154,7 @@ router.post('/upload-csv', upload.single('file'), async (req, res) => {
 });
 
 // POST route to bulk upload questions via JSON
-router.post('/upload-json', upload.single('file'), async (req, res) => {
+router.post('/upload-json', uploadMemory.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded.' });
@@ -96,6 +179,7 @@ router.post('/upload-json', upload.single('file'), async (req, res) => {
     }));
 
     await Question.insertMany(formattedQuestions);
+    console.log('JSON processed and discarded, no file saved to disk');
     res.status(201).json({ message: 'Questions uploaded successfully!' });
   } catch (error) {
     console.error(error.message);
