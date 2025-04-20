@@ -14,7 +14,7 @@ const MockTest = () => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(location.state?.duration * 60 || 18000); // Default to 30 minutes if no duration
+  const [timeLeft, setTimeLeft] = useState(location.state?.duration * 60 || 10800); // Default to 30 minutes if no duration
   const [testStarted, setTestStarted] = useState(true);
   const [visitMarks, setVisitMarks] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
