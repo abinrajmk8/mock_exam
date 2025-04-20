@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MockTest from './pages/MockTest';
 import Result from './pages/Result';
 import AdminLogin from './pages/AdminLogin';
@@ -6,13 +6,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import Instructions from './pages/Instructions';
 
 function App() {
-  const location = useLocation();
-
-  // Show alert on initial load or reload to unmatched routes
-  if (location.pathname !== '/' && location.pathname !== '/instructions/6804a6a54bcf4a4370d68463') {
-    alert('Page not found. Redirecting to Instructions page.');
-  }
-
   return (
     <Routes>
       <Route path="/" element={<Instructions />} />
@@ -45,10 +38,6 @@ function App() {
       <Route path="/result" element={<Result />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route
-        path="*"
-        element={<Navigate to="/instructions/6804a6a54bcf4a4370d68463" replace />}
-      />
     </Routes>
   );
 }
