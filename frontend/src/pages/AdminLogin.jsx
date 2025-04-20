@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './AdminLogin.css';
+import BACKEND_URL from '../config';
 
 function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -8,18 +10,21 @@ function AdminLogin() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Hardcoded credentials for now
-  const adminCredentials = {
-    username: 'admin',
-    password: 'admin123'
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username === adminCredentials.username && password === adminCredentials.password) {
-      navigate('/admin-dashboard'); // Redirect to Admin Dashboard
-    } else {
-      setError('Invalid credentials!');
+    setError('');
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/auth/login`, { username, password });
+      if (response.data.message === 'Login successful') {
+        const { role } = response.data.user;
+        if (role === 'admin') {
+          navigate('/admin-dashboard');
+        } else {
+          setError('Only admins can log in here');
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
