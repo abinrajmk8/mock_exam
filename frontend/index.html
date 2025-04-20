@@ -3,13 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- ✅ Desktop-first layout, mobile users can still zoom/scale -->
+    <meta name="viewport" content="width=1024" />
+
     <title>Keam Mock Test SFI GCEK</title>
-   
+    
+    <style>
+      /* 🖥️ Default to desktop layout, allow scrolling on mobile */
+      html, body {
+        min-width: 1024px;
+        overflow-x: auto;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-   
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
