@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
   }
   
   .instruction-container {
@@ -16,86 +17,66 @@
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: left;
-    line-height: 1.6;
-  }
-  
-  .instruction-header {
-    background-color: #f44336;
-    color: white;
-    padding: 12px;
     text-align: center;
-    font-size: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .instruction-image {
+    width: 100%;
+    max-width: 100%;
     margin-bottom: 20px;
   }
   
-  .instruction-box {
-    border: 1px solid #ccc;
-    padding: 25px;
-    margin-bottom: 25px;
-  }
-  
-  .instruction-box h2 {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #1a1a1a;
-    font-weight: 600;
-  }
-  
-  .instruction-box h3 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #1a1a1a;
-    font-weight: 500;
-  }
-  
-  .instruction-box ul {
-    list-style-type: disc;
-    padding-left: 25px;
-    margin-bottom: 20px;
-  }
-  
-  .instruction-box li {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    color: #1a1a1a;
-    line-height: 1.8;
-  }
-  
-  .instruction-box .important {
-    color: #ff0000;
-  }
-  
-  .instruction-box .asterisk-note {
-    font-style: italic;
-    color: #666;
-    font-size: 1.1rem;
-  }
-  
-  .instruction-box .declaration {
-    font-size: 1.1rem;
-    color: #1a1a1a;
-    margin-top: 25px;
-    border-top: 1px solid #ddd;
-    padding-top: 15px;
-    line-height: 1.8;
+  .instruction-img {
+    width: 100%;
+    height: auto;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
   }
   
   .btn-start {
-    padding: 15px 40px;
-    font-size: 1.4rem;
+    padding: 10px 30px;
+    font-size: 1.2rem;
     background-color: #3f51b5;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    display: block;
-    margin: 25px auto 0;
+    width: 100%;
+    max-width: 250px;
   }
   
   .btn-start:hover {
     background-color: #303f9f;
+  }
+  
+  @media (max-width: 768px) {
+    .instruction-container {
+      padding: 15px;
+    }
+  
+    .instruction-img {
+      max-height: 70vh;
+    }
+  
+    .btn-start {
+      font-size : 1.0rem;
+      max-width: 200px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .instruction-img {
+      max-height: 60vh;
+    }
+  
+    .btn-start {
+      font-size : 0.9rem;
+      max-width: 180px;
+    }
   }
