@@ -11,8 +11,14 @@ import authRoutes from './routes/auth.js';
 dotenv.config();
 
 const app = express();
+// Configure CORS to allow the frontend origin
+const corsOptions = {
+  origin: 'https://sfigcekkeammocktest.vercel.app', // Specify the frontend origin
+  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+};
+app.use(cors(corsOptions));
 
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 // Debug: Log the current module URL and directory
