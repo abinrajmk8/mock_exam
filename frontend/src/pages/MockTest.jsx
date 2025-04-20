@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './MockTest.css';
 import BACKEND_URL from '../config';
 
 const MockTest = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const id = '6804a6a54bcf4a4370d68463'; // Hardcoded ID
   const [questions, setQuestions] = useState([]);
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(location.state?.duration * 60 || 0);
+  const [timeLeft, setTimeLeft] = useState(location.state?.duration * 60 || 1800); // Default to 30 minutes if no duration
   const [testStarted, setTestStarted] = useState(true);
   const [visitMarks, setVisitMarks] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
@@ -85,7 +85,7 @@ const MockTest = () => {
 
   useEffect(() => {
     let timer;
-    if (testStarted && timeLeft > 0 && !submitted) {
+    if (testStarted && timeLeft > 0 && !submitted && shuffledQuestions.length > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
@@ -93,7 +93,7 @@ const MockTest = () => {
       handleSubmit();
     }
     return () => clearInterval(timer);
-  }, [timeLeft, testStarted, submitted]);
+  }, [timeLeft, testStarted, submitted, shuffledQuestions]);
 
   const handleOptionChange = (questionId, selectedOption) => {
     setAnswers((prev) => {
