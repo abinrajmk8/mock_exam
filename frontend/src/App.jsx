@@ -4,6 +4,7 @@ import Result from './pages/Result';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import Instructions from './pages/Instructions';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
       <Route path="/result" element={<Result />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="*" element={<NotFound />} /> {/* Catch-all route for 404 */}
     </Routes>
   );
 }
