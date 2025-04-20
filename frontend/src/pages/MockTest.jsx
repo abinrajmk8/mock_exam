@@ -21,6 +21,18 @@ const MockTest = () => {
   const testTitle = location.state?.testName || 'Mock Test';
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!submitted && (currentIndex >= 0 || Object.keys(answers).length > 0)) {
+        e.preventDefault();
+        e.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [currentIndex, answers, submitted]);
+
+  useEffect(() => {
     if (!dataFetched) {
       const fetchTestData = async () => {
         try {
@@ -91,6 +103,7 @@ const MockTest = () => {
       } else {
         newAnswers[questionId] = selectedOption;
       }
+      saveToLocalStorage();
       return newAnswers;
     });
   };
@@ -99,6 +112,7 @@ const MockTest = () => {
     setAnswers((prev) => {
       const newAnswers = { ...prev };
       delete newAnswers[questionId];
+      saveToLocalStorage();
       return newAnswers;
     });
   };
@@ -118,28 +132,40 @@ const MockTest = () => {
   };
 
   const handleSubmit = () => {
-    setSubmitted(true);
-    const result = calculateResult();
-    navigate('/result', { state: { userAnswers: answers, questions: shuffledQuestions, title: testTitle, id, ...result } });
+    if (!submitted) {
+      setSubmitted(true);
+      const result = calculateResult();
+      navigate('/result', { state: { userAnswers: answers, questions: shuffledQuestions, title: testTitle, id, ...result } });
+      clearLocalStorage();
+    }
   };
 
   const handleNext = () => {
-    if (currentIndex < shuffledQuestions.length - 1) setCurrentIndex((prev) => prev + 1);
+    if (currentIndex < shuffledQuestions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      saveToLocalStorage();
+    }
   };
 
   const handlePrevious = () => {
-    if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
   };
 
   const handleJumpToQuestion = (index) => {
-    if (testStarted && index >= 0 && index < shuffledQuestions.length) setCurrentIndex(index);
+    if (testStarted && index >= 0 && index < shuffledQuestions.length) {
+      setCurrentIndex(index);
+      saveToLocalStorage();
+    }
   };
 
   const toggleVisitMark = (questionId) => {
-    setVisitMarks((prev) => ({
-      ...prev,
-      [questionId]: !prev[questionId],
-    }));
+    setVisitMarks((prev) => {
+      const newVisitMarks = { ...prev, [questionId]: !prev[questionId] };
+      saveToLocalStorage();
+      return newVisitMarks;
+    });
   };
 
   const currentQuestion = shuffledQuestions[currentIndex] || {};
@@ -170,6 +196,15 @@ const MockTest = () => {
   };
 
   const subjectGroups = groupBySubject(shuffledQuestions);
+
+  const saveToLocalStorage = () => {
+    const state = { currentIndex, answers, visitMarks };
+    localStorage.setItem(`mockTestState_${id}`, JSON.stringify(state));
+  };
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem(`mockTestState_${id}`);
+  };
 
   return (
     <div className="mock-test-container">
