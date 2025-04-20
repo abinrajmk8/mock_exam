@@ -306,7 +306,7 @@ const MockTest = () => {
                 </div>
               </div>
             )}
-            {shuffledQuestions.length === 0 && !submitted && <p className="no-questions">No questions available for this test.</p>}
+            {shuffledQuestions.length === 0 && !submitted && <p className="no-questions">Loading questions Please Wait ...</p>}
             {submitted && (
               <div className="result-summary">
                 <h3>Test Submitted!</h3>
