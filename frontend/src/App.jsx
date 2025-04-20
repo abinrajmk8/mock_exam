@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import MockTest from './pages/MockTest';
 import Result from './pages/Result';
@@ -8,29 +8,31 @@ import Instructions from './pages/Instructions';
 
 function App() {
   const location = useLocation();
-  const navigate = useNavigate();
 
-  // Detect page refresh using sessionStorage
+  // Detect page refresh using sessionStorage with timestamp
   useEffect(() => {
-    const isReloaded = sessionStorage.getItem('isReloaded');
-    if (!isReloaded) {
-      sessionStorage.setItem('isReloaded', 'true');
-      // Redirect to the root URL on initial load or refresh
-      window.location.href = 'https://sfigcek-keammocktest.onrender.com/';
-    } else {
-      // Clear the flag on subsequent navigation to avoid infinite redirects
-      sessionStorage.setItem('isReloaded', 'true');
+    const lastLoad = sessionStorage.getItem('lastLoad');
+    const currentTime = Date.now();
+    if (lastLoad) {
+      const timeDiff = currentTime - parseInt(lastLoad, 10);
+      // If reloaded within a short interval (e.g., < 1000ms), assume refresh
+      if (timeDiff < 1000) {
+        window.location.href = 'https://sfigcek-keammocktest.onrender.com/';
+      }
     }
+    sessionStorage.setItem('lastLoad', currentTime.toString());
     // Cleanup on unmount
     return () => {
-      sessionStorage.removeItem('isReloaded');
+      sessionStorage.removeItem('lastLoad');
     };
-  }, [navigate]);
+  }, []);
 
-  // Show alert on unmatched routes
-  if (location.pathname !== '/' && location.pathname !== '/instructions/6804a6a54bcf4a4370d68463') {
-    alert('Page not found. Redirecting to Instructions page.');
-  }
+  // Show alert only for unmatched routes, not on initial load
+  useEffect(() => {
+    if (location.pathname !== '/' && location.pathname !== '/instructions/6804a6a54bcf4a4370d68463') {
+      alert('Page not found. Redirecting to Instructions page.');
+    }
+  }, [location.pathname]); // Only trigger on route change, not initial mount
 
   return (
     <Routes>
