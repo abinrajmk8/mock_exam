@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import questionRoutes from './routes/questionRoutes.js';
-import mockTestRoutes from './routes/mockTestRoutes.js';  // Add this import
+import mockTestRoutes from './routes/mockTestRoutes.js';  
+import authRoutes from './routes/auth.js';
 
 dotenv.config();
 
@@ -25,7 +26,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use('/api/questions', questionRoutes);
-app.use('/api/tests', mockTestRoutes);  // Add this line for mock test routes
+app.use('/api/tests', mockTestRoutes);
+app.use('/api/auth',authRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

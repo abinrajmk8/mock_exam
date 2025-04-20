@@ -1,4 +1,4 @@
 // src/config.js
-const BACKEND_URL = 'http://localhost:5000'; // Change this when in production
+const BACKEND_URL = 'https://mock-exam-backend.onrender.com';
 
 export default BACKEND_URL;
