@@ -17,8 +17,10 @@ function AdminDashboard() {
     answer: '0',
     difficulty: 'easy',
     image: null,
+    subjects: 'phy', // Default subject
   });
   const [csvFile, setCsvFile] = useState(null);
+  const [csvSubject, setCsvSubject] = useState('phy'); // State for CSV subject
   const [activeSubTab, setActiveSubTab] = useState('');
 
   useEffect(() => {
@@ -42,7 +44,7 @@ function AdminDashboard() {
     }));
     setCsvFile(null);
     setShowCreateForm(false);
-    setActiveSubTab(''); 
+    setActiveSubTab('');
   };
 
   const handleCreateTest = async () => {
@@ -96,6 +98,13 @@ function AdminDashboard() {
     }));
   };
 
+  const handleRemoveImage = () => {
+    setQuestionData((prevData) => ({
+      ...prevData,
+      image: null,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedTestId) {
@@ -125,6 +134,7 @@ function AdminDashboard() {
     formData.append('options', JSON.stringify(questionData.options));
     formData.append('answer', questionData.answer);
     formData.append('difficulty', questionData.difficulty);
+    formData.append('subjects', JSON.stringify([questionData.subjects])); // Send as array with single subject
     if (questionData.image) formData.append('image', questionData.image);
 
     try {
@@ -142,6 +152,7 @@ function AdminDashboard() {
           answer: '0',
           difficulty: 'easy',
           image: null,
+          subjects: 'phy', // Reset to default
         });
       } else {
         alert(result.error || 'Failed to add question');
@@ -156,9 +167,17 @@ function AdminDashboard() {
     setCsvFile(e.target.files[0]);
   };
 
+  const handleRemoveCsv = () => {
+    setCsvFile(null);
+  };
+
   const handleCSVUpload = async () => {
     if (!csvFile) {
       alert('Please select a CSV file to upload.');
+      return;
+    }
+    if (!selectedTestId) {
+      alert('Please select a test first.');
       return;
     }
 
@@ -166,7 +185,7 @@ function AdminDashboard() {
     formData.append('file', csvFile);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/questions/upload-csv?testId=${selectedTestId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/questions/upload-csv/${csvSubject}?testId=${selectedTestId}`, {
         method: 'POST',
         body: formData,
       });
@@ -188,7 +207,7 @@ function AdminDashboard() {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo">Admin Panel</div>
-          <button className="create-button">Create Test</button>
+          <button className="create-button" onClick={() => setShowCreateForm(true)}>Create Test</button>
         </div>
       </header>
 
@@ -302,16 +321,40 @@ function AdminDashboard() {
             <section className={`question-section ${activeSubTab === 'bulkUpload' ? '' : 'hidden'}`}>
               <div className="csv-upload-section">
                 <h3 className="section-subtitle">Bulk Upload Questions</h3>
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileChange}
-                  className="file-input"
-                />
+                <label className="label">
+                  Subject:
+                  <select
+                    value={csvSubject}
+                    onChange={(e) => setCsvSubject(e.target.value)}
+                    className="input-field"
+                  >
+                    <option value="phy">Physics</option>
+                    <option value="chem">Chemistry</option>
+                    <option value="maths">Maths</option>
+                  </select>
+                </label>
+                <div className="file-input-group">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileChange}
+                    className="file-input"
+                  />
+                  {csvFile && (
+                    <button
+                      onClick={handleRemoveCsv}
+                      className="btn-secondary remove-btn"
+                      style={{ marginLeft: '10px' }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
                 <button
                   onClick={handleCSVUpload}
                   className="btn-secondary"
                   disabled={!csvFile}
+                  style={{ marginTop: '10px' }}
                 >
                   Upload CSV
                 </button>
@@ -347,13 +390,24 @@ function AdminDashboard() {
                 </label>
                 <label className="label">
                   Image (Optional):
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    name="image"
-                    className="input-field"
-                  />
+                  <div className="file-input-group">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      name="image"
+                      className="file-input"
+                    />
+                    {questionData.image && (
+                      <button
+                        onClick={handleRemoveImage}
+                        className="btn-secondary remove-btn"
+                        style={{ marginLeft: '10px' }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </label>
                 <label className="label">
                   Correct Answer:
@@ -382,6 +436,20 @@ function AdminDashboard() {
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
+                  </select>
+                </label>
+                <label className="label">
+                  Subject:
+                  <select
+                    name="subjects"
+                    value={questionData.subjects}
+                    onChange={handleInputChange}
+                    required
+                    className="input-field"
+                  >
+                    <option value="phy">Physics</option>
+                    <option value="chem">Chemistry</option>
+                    <option value="maths">Maths</option>
                   </select>
                 </label>
                 <button type="submit" className="btn-primary">

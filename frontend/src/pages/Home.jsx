@@ -21,12 +21,12 @@ function Home() {
   }, []);
 
   const handleTestClick = (test) => {
-    navigate(`/test/${test._id}`, {
+    navigate(`/instructions/${test._id}`, {
       state: {
         testName: test.name,
         duration: test.duration,
-        individualMarks: test.individualMarks || 1, // Default to 1 if not provided
-        negativeMarks: test.negativeMarks || 0 // Default to 0 if not provided
+        individualMarks: test.individualMarks || 1,
+        negativeMarks: test.negativeMarks || 0
       }
     });
   };

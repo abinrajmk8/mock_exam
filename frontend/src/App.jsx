@@ -4,6 +4,7 @@ import MockTest from './pages/MockTest';
 import Result from './pages/Result';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import Instructions from './pages/Instructions';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/result" element={<Result />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/instructions/:id" element={<Instructions />} />
     </Routes>
   );
 }

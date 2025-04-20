@@ -32,7 +32,7 @@ const uploadDisk = multer({ storage: diskStorage });
 // POST route to add a new question with optional image
 router.post('/add', uploadDisk.single('image'), async (req, res) => {
   try {
-    let testId, question, options, answer, difficulty;
+    let testId, question, options, answer, difficulty, subjects;
 
     // Handle data from FormData or JSON
     if (req.body.testId) {
@@ -41,12 +41,14 @@ router.post('/add', uploadDisk.single('image'), async (req, res) => {
       options = req.body.options;
       answer = req.body.answer;
       difficulty = req.body.difficulty;
+      subjects = req.body.subjects ? JSON.parse(req.body.subjects) : []; // Default to empty array if not provided
     } else {
       testId = req.body.testId;
       question = req.body.question;
       options = req.body.options;
       answer = req.body.answer;
       difficulty = req.body.difficulty;
+      subjects = req.body.subjects ? JSON.parse(req.body.subjects) : []; // Default to empty array if not provided
     }
 
     // Validate required fields
@@ -76,13 +78,20 @@ router.post('/add', uploadDisk.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Difficulty must be easy, medium, or hard.' });
     }
 
-    // Create new question with optional image
+    // Validate subjects (ensure it's an array of strings)
+    if (subjects && !Array.isArray(subjects)) {
+      return res.status(400).json({ error: 'Subjects must be an array of strings.' });
+    }
+    const validatedSubjects = Array.isArray(subjects) ? subjects.map(s => s.toString()) : [];
+
+    // Create new question with optional image and subjects
     const questionData = {
       testId,
       question,
       options: parsedOptions,
       answer: answerIndex,
       difficulty,
+      subjects: validatedSubjects,
     };
     if (req.file) {
       questionData.imageUrl = `/uploads/questions/${req.file.filename}`;
@@ -104,12 +113,18 @@ router.post('/add', uploadDisk.single('image'), async (req, res) => {
 });
 
 // POST route to bulk upload questions via CSV
-router.post('/upload-csv', uploadMemory.single('file'), async (req, res) => {
+router.post('/upload-csv/:subject', uploadMemory.single('file'), async (req, res) => {
   try {
     const { testId } = req.query;
+    const { subject } = req.params;
     if (!testId) {
       return res.status(400).json({ error: 'Test ID is required.' });
     }
+    if (!subject) {
+      return res.status(400).json({ error: 'Subject parameter is required.' });
+    }
+
+    const parsedSubject = [subject.trim()]; // Treat as a single subject in an array
 
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded.' });
@@ -138,6 +153,7 @@ router.post('/upload-csv', uploadMemory.single('file'), async (req, res) => {
         options,
         answer: answerIndex,
         difficulty: q.difficulty || 'easy',
+        subjects: parsedSubject, // Assign single subject as an array
         createdAt: new Date(q.createdAt) || new Date(),
         updatedAt: new Date(q.updatedAt) || new Date(),
         __v: parseInt(q.__v, 10) || 0
@@ -167,16 +183,20 @@ router.post('/upload-json', uploadMemory.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Invalid JSON format. Expected an array of questions.' });
     }
 
-    const formattedQuestions = questionsArray.map(q => ({
-      testId: q.testId,
-      question: q.question,
-      options: Array.isArray(q.options) ? q.options : [],
-      answer: parseInt(q.answer, 10),
-      difficulty: q.difficulty || 'easy',
-      createdAt: new Date(q.createdAt) || new Date(),
-      updatedAt: new Date(q.updatedAt) || new Date(),
-      __v: parseInt(q.__v, 10) || 0
-    }));
+    const formattedQuestions = questionsArray.map(q => {
+      const subjects = q.subjects && Array.isArray(q.subjects) ? q.subjects.map(s => s.toString()) : [];
+      return {
+        testId: q.testId,
+        question: q.question,
+        options: Array.isArray(q.options) ? q.options : [],
+        answer: parseInt(q.answer, 10),
+        difficulty: q.difficulty || 'easy',
+        subjects, // Use subjects from JSON if provided, otherwise empty array
+        createdAt: new Date(q.createdAt) || new Date(),
+        updatedAt: new Date(q.updatedAt) || new Date(),
+        __v: parseInt(q.__v, 10) || 0
+      };
+    });
 
     await Question.insertMany(formattedQuestions);
     console.log('JSON processed and discarded, no file saved to disk');

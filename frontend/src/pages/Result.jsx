@@ -165,19 +165,32 @@ function Result() {
               <div key={index} ref={el => questionRefs.current[index] = el} className={`question-card ${!userAnswer ? 'unattempted' : isCorrect ? 'correct' : 'incorrect'}`}>
                 <h4>Question {index + 1}</h4>
                 <p className="question-text">{q.question}</p>
-                <ul className="options-list">
-                  {q.options && q.options.map((opt, i) => (
-                    <li
-                      key={i}
-                      className={
-                        i === q.answer ? 'correct-answer' :
-                        i === userChoiceIndex && userChoiceIndex !== -1 ? (isCorrect ? 'selected-correct' : 'selected-incorrect') : ''
-                      }
-                    >
-                      <span className="option-label">{String.fromCharCode(65 + i)}.</span> {opt || 'N/A'}
-                    </li>
-                  ))}
-                </ul>
+                {q.imageUrl && (
+                  <div className="question-image">
+                    <img
+                      src={`${BACKEND_URL}${q.imageUrl}`}
+                      alt={`Question ${index + 1}`}
+                      className="question-img"
+                      onError={(e) => console.log('Image load error for question', index + 1, ':', e.target.src)}
+                    />
+                  </div>
+                )}
+                <div className="options-list">
+                  {q.options && q.options.map((opt, i) => {
+                    const isCorrectAnswer = i === q.answer;
+                    const isUserSelected = i === userChoiceIndex && userChoiceIndex !== -1;
+                    return (
+                      <div key={i} className="option-row">
+                        <span className="option-label">{String.fromCharCode(65 + i)}:</span>
+                        <span
+                          className={`option-value ${isCorrectAnswer ? 'correct-answer' : ''} ${isUserSelected ? (isCorrect ? 'selected-correct' : 'selected-incorrect') : ''}`}
+                        >
+                          {opt || 'N/A'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
                 <p className={`result-status ${!userAnswer ? 'unattempted' : isCorrect ? 'correct' : 'incorrect'}`}>
                   {userAnswer === null ? '❓ Skipped' : isCorrect ? '✅ Correct' : `❌ Wrong (Correct: ${correctOption || 'undefined'})`}
                 </p>

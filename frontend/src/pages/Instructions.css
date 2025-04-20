@@ -1,0 +1,101 @@
+.mock-test-container {
+    padding: 25px;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    background-color: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .instruction-container {
+    width: 100%;
+    max-width: 1400px;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    line-height: 1.6;
+  }
+  
+  .instruction-header {
+    background-color: #f44336;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-size: 1.7rem;
+    margin-bottom: 20px;
+  }
+  
+  .instruction-box {
+    border: 1px solid #ccc;
+    padding: 25px;
+    margin-bottom: 25px;
+  }
+  
+  .instruction-box h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+  
+  .instruction-box h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    font-weight: 500;
+  }
+  
+  .instruction-box ul {
+    list-style-type: disc;
+    padding-left: 25px;
+    margin-bottom: 20px;
+  }
+  
+  .instruction-box li {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #1a1a1a;
+    line-height: 1.8;
+  }
+  
+  .instruction-box .important {
+    color: #ff0000;
+  }
+  
+  .instruction-box .asterisk-note {
+    font-style: italic;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .instruction-box .declaration {
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    margin-top: 25px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    line-height: 1.8;
+  }
+  
+  .btn-start {
+    padding: 15px 40px;
+    font-size: 1.4rem;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 25px auto 0;
+  }
+  
+  .btn-start:hover {
+    background-color: #303f9f;
+  }
