@@ -139,6 +139,16 @@
   }
 }
 
+/* CMF Phone 1 portrait range (360px-390px width) */
+@media (min-width: 360px) and (max-width: 390px) and (max-height: 800px) {
+  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
+    top: 80%; /* Position at 80% of screen height to lift it slightly above bottom */
+    bottom: auto; /* Override bottom positioning */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
 @media (min-width: 769px) {
   .instruction-page-container {
     max-height: 100vh; /* Prevent overflow on very tall screens */
