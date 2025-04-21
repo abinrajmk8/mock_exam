@@ -1,12 +1,12 @@
 .instruction-page-container {
   width: 100%;
   height: 100vh;
-  background-color: #ffffff; /* White background */
+  background-color: #ffffff;
   position: relative;
   overflow: hidden;
   background-repeat: no-repeat;
-  background-position: top; /* Align image top to screen top on small screens by default */
-  background-size: contain; /* Ensures the entire image is visible, scales to fit */
+  background-position: top;
+  background-size: contain;
 }
 
 .instruction-container {
@@ -16,31 +16,31 @@
   top: 0;
   left: 0;
   display: flex;
-  flex-direction: column; /* Stack image and button vertically */
-  align-items: center; /* Center horizontally */
-  justify-content: flex-start; /* Align content from the top */
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   overflow: hidden;
 }
 
 .image-area {
   width: 100%;
-  flex-grow: 1; /* Allow image area to take up available space */
-  min-height: 60vh; /* Approximate height for the image area, adjustable based on image */
+  flex-grow: 1;
+  min-height: 60vh;
 }
 
 .button-footer-area {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* Align button to the bottom of this area */
-  padding-bottom: 20px; /* Extra space below button */
-  position: relative; /* Relative positioning for button context */
+  align-items: flex-end;
+  padding-bottom: 20px;
+  position: relative;
 }
 
 .btn-start {
   padding: 10px 30px;
   font-size: 1.2rem;
-  background-color: #3f51b5;
+  background-color: rgba(63, 81, 181, 0.9);
   color: white;
   border: none;
   border-radius: 6px;
@@ -49,13 +49,12 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 250px;
-  background-color: rgba(63, 81, 181, 0.9); /* Semi-transparent for visibility */
-  position: absolute; /* Absolute positioning for specific rules */
-  bottom: 20px; /* Default bottom position for mobile */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Offset to center the button */
-  z-index: 10; /* Ensure it stays above other elements */
-  opacity: 0.9; /* Match bg-opacity-90 */
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  opacity: 0.9;
 }
 
 .btn-start:hover {
@@ -64,41 +63,42 @@
 
 .footer {
   width: 100%;
-  background-color: #ffffff; /* Match the page sides */
-  height: 0; /* Default height, will expand if needed */
+  background-color: #ffffff;
+  height: 0;
   position: absolute;
   bottom: 0;
   left: 0;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .instruction-page-container {
-    background-position: top; /* Ensure image starts at the top */
-    padding-top: 0; /* Remove any top padding */
+    background-position: top;
+    padding-top: 0;
   }
 
   .image-area {
-    min-height: 60vh; /* Ensure image area takes up most of the screen */
+    min-height: 60vh;
   }
 
   .button-footer-area {
-    padding-bottom: 40px; /* Extra space below button to make it look under the image */
+    padding-bottom: 40px;
   }
 
   .btn-start {
     font-size: 1.0rem;
     max-width: 200px;
-    bottom: 20px; /* Default positioning */
+    bottom: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .image-area {
-    min-height: 50vh; /* Slightly reduced for smaller screens */
+    min-height: 50vh;
   }
 
   .button-footer-area {
-    padding-bottom: 20px; /* Reduced space for smaller screens */
+    padding-bottom: 20px;
   }
 
   .btn-start {
@@ -107,75 +107,53 @@
   }
 
   .footer {
-    height: 20px; /* Adjusted extra space for smaller screens */
+    height: 20px;
   }
 }
 
-/* Specific resolutions */
-@media (max-width: 291px) and (max-height: 720px) {
-  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
-    top: 80%; /* Position at 80% of screen height */
-    bottom: auto; /* Override bottom positioning */
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-@media (max-width: 290px) and (max-height: 720px), (max-width: 292px) and (max-height: 720px) {
-  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
-    top: 80%; /* Position at 80% of screen height for nearby resolutions */
-    bottom: auto; /* Override bottom positioning */
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
+/* 🔼 Adjust Start button for ultra small screens */
 @media (max-width: 300px) and (max-height: 720px) {
-  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
-    top: 85%; /* Incremental adjustment for slightly larger width */
-    bottom: auto; /* Override bottom positioning */
-    left: 50%;
-    transform: translateX(-50%);
+  .btn-start {
+    bottom: 70px;
+    top: 82%;
   }
 }
 
-/* CMF Phone 1 portrait range (360px-390px width) */
-@media (min-width: 360px) and (max-width: 390px) and (max-height: 800px) {
-  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
-    top: 80%; /* Position at 80% of screen height to lift it slightly above bottom */
-    bottom: auto; /* Override bottom positioning */
-    left: 50%;
-    transform: translateX(-50%);
+/* 🔼 Adjust Start button for CMF-sized phones */
+@media (min-width: 360px) and (max-width: 420px) and (max-height: 800px) {
+  .btn-start {
+    bottom: 60px; /* Lifted from default 20px */
   }
 }
 
+/* Desktop setup */
 @media (min-width: 769px) {
   .instruction-page-container {
-    max-height: 100vh; /* Prevent overflow on very tall screens */
-    background-position: center; /* Center the image on desktop */
+    max-height: 100vh;
+    background-position: center;
   }
 
   .instruction-container {
-    justify-content: center; /* Center vertically on desktop */
+    justify-content: center;
   }
 
   .btn-start {
-    bottom: 25px; /* Position from the bottom */
-    right: 25px; /* Position from the right */
-    left: auto; /* Override left centering */
-    transform: none; /* Remove centering transform */
-    font-size: 1.1rem; /* Slightly reduced font size for PC */
-    max-width: 200px; /* Slightly reduced max-width for PC */
-    padding: 3px 25px; /* Slightly reduced padding for PC */
-    position: absolute; /* Absolute positioning for desktop */
+    bottom: 25px;
+    right: 25px;
+    left: auto;
+    transform: none;
+    font-size: 1.1rem;
+    max-width: 200px;
+    padding: 3px 25px;
+    position: absolute;
   }
 
   .footer {
-    height: 0px; /* No footer needed on desktop */
+    height: 0px;
   }
 
   .image-area,
   .button-footer-area {
-    display: none; /* Hide additional divs on desktop, use background image */
+    display: none;
   }
 }
