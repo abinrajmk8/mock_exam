@@ -120,11 +120,12 @@
 }
 
 /* 🔼 Adjust Start button for CMF-sized phones */
-@media (min-width: 360px) and (max-width: 420px) and (max-height: 800px) {
+@media (min-width: 360px) and (max-width: 490px) and (max-height: 890px) {
   .btn-start {
     bottom: 60px; /* Lifted from default 20px */
   }
 }
+
 
 /* Desktop setup */
 @media (min-width: 769px) {
