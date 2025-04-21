@@ -5,7 +5,7 @@
   position: relative;
   overflow: hidden;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: top; /* Align image top to screen top on small screens by default */
   background-size: contain; /* Ensures the entire image is visible, scales to fit */
 }
 
@@ -16,9 +16,25 @@
   top: 0;
   left: 0;
   display: flex;
-  align-items: end; /* Align items to the bottom */
-  justify-content: center; /* Center horizontally at the bottom */
+  flex-direction: column; /* Stack image and button vertically */
+  align-items: center; /* Center horizontally */
+  justify-content: flex-start; /* Align content from the top */
   overflow: hidden;
+}
+
+.image-area {
+  width: 100%;
+  flex-grow: 1; /* Allow image area to take up available space */
+  min-height: 60vh; /* Approximate height for the image area, adjustable based on image */
+}
+
+.button-footer-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Align button to the bottom of this area */
+  padding-bottom: 20px; /* Extra space below button */
+  position: relative; /* Relative positioning for button context */
 }
 
 .btn-start {
@@ -34,10 +50,12 @@
   width: 100%;
   max-width: 250px;
   background-color: rgba(63, 81, 181, 0.9); /* Semi-transparent for visibility */
-  position: absolute; /* Ensure absolute positioning */
+  position: absolute; /* Absolute positioning for specific rules */
   bottom: 20px; /* Default bottom position for mobile */
-  left: 50%; /* Center horizontally for mobile */
-  transform: translateX(-50%); /* Offset to center the button for mobile */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Offset to center the button */
+  z-index: 10; /* Ensure it stays above other elements */
+  opacity: 0.9; /* Match bg-opacity-90 */
 }
 
 .btn-start:hover {
@@ -54,32 +72,81 @@
 }
 
 @media (max-width: 768px) {
+  .instruction-page-container {
+    background-position: top; /* Ensure image starts at the top */
+    padding-top: 0; /* Remove any top padding */
+  }
+
+  .image-area {
+    min-height: 60vh; /* Ensure image area takes up most of the screen */
+  }
+
+  .button-footer-area {
+    padding-bottom: 40px; /* Extra space below button to make it look under the image */
+  }
+
   .btn-start {
     font-size: 1.0rem;
     max-width: 200px;
-    bottom: 16px; /* Slightly smaller bottom margin for mobile */
-  }
-
-  .footer {
-    height: 16px; /* Ensure footer covers any overflow on mobile */
+    bottom: 20px; /* Default positioning */
   }
 }
 
 @media (max-width: 480px) {
+  .image-area {
+    min-height: 50vh; /* Slightly reduced for smaller screens */
+  }
+
+  .button-footer-area {
+    padding-bottom: 20px; /* Reduced space for smaller screens */
+  }
+
   .btn-start {
     font-size: 0.9rem;
     max-width: 180px;
-    bottom: 12px; /* Even smaller for smaller screens */
   }
 
   .footer {
-    height: 12px; /* Adjust footer height for smaller screens */
+    height: 20px; /* Adjusted extra space for smaller screens */
+  }
+}
+
+/* Specific resolutions */
+@media (max-width: 291px) and (max-height: 720px) {
+  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
+    top: 80%; /* Position at 80% of screen height */
+    bottom: auto; /* Override bottom positioning */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 290px) and (max-height: 720px), (max-width: 292px) and (max-height: 720px) {
+  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
+    top: 80%; /* Position at 80% of screen height for nearby resolutions */
+    bottom: auto; /* Override bottom positioning */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 300px) and (max-height: 720px) {
+  .btn-start.absolute.bottom-4.z-10.bg-opacity-90 {
+    top: 85%; /* Incremental adjustment for slightly larger width */
+    bottom: auto; /* Override bottom positioning */
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
 @media (min-width: 769px) {
   .instruction-page-container {
     max-height: 100vh; /* Prevent overflow on very tall screens */
+    background-position: center; /* Center the image on desktop */
+  }
+
+  .instruction-container {
+    justify-content: center; /* Center vertically on desktop */
   }
 
   .btn-start {
@@ -90,9 +157,15 @@
     font-size: 1.1rem; /* Slightly reduced font size for PC */
     max-width: 200px; /* Slightly reduced max-width for PC */
     padding: 3px 25px; /* Slightly reduced padding for PC */
+    position: absolute; /* Absolute positioning for desktop */
   }
 
   .footer {
     height: 0px; /* No footer needed on desktop */
+  }
+
+  .image-area,
+  .button-footer-area {
+    display: none; /* Hide additional divs on desktop, use background image */
   }
 }
