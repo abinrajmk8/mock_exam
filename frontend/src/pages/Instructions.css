@@ -1,82 +1,98 @@
-.mock-test-container {
-    padding: 25px;
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-    background-color: #e9ecef;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .instruction-container {
-    width: 100%;
-    max-width: 1400px;
-    background-color: #fff;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .instruction-image {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .instruction-img {
-    width: 100%;
-    height: auto;
-    max-height: 90vh;
-    object-fit: contain;
-    border-radius: 8px;
-  }
-  
+.instruction-page-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff; /* White background */
+  position: relative;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain; /* Ensures the entire image is visible, scales to fit */
+}
+
+.instruction-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: end; /* Align items to the bottom */
+  justify-content: center; /* Center horizontally at the bottom */
+  overflow: hidden;
+}
+
+.btn-start {
+  padding: 10px 30px;
+  font-size: 1.2rem;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 250px;
+  background-color: rgba(63, 81, 181, 0.9); /* Semi-transparent for visibility */
+  position: absolute; /* Ensure absolute positioning */
+  bottom: 20px; /* Default bottom position for mobile */
+  left: 50%; /* Center horizontally for mobile */
+  transform: translateX(-50%); /* Offset to center the button for mobile */
+}
+
+.btn-start:hover {
+  background-color: #303f9f;
+}
+
+.footer {
+  width: 100%;
+  background-color: #ffffff; /* Match the page sides */
+  height: 0; /* Default height, will expand if needed */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+@media (max-width: 768px) {
   .btn-start {
-    padding: 10px 30px;
-    font-size: 1.2rem;
-    background-color: #3f51b5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 250px;
+    font-size: 1.0rem;
+    max-width: 200px;
+    bottom: 16px; /* Slightly smaller bottom margin for mobile */
   }
-  
-  .btn-start:hover {
-    background-color: #303f9f;
+
+  .footer {
+    height: 16px; /* Ensure footer covers any overflow on mobile */
   }
-  
-  @media (max-width: 768px) {
-    .instruction-container {
-      padding: 15px;
-    }
-  
-    .instruction-img {
-      max-height: 70vh;
-    }
-  
-    .btn-start {
-      font-size : 1.0rem;
-      max-width: 200px;
-    }
+}
+
+@media (max-width: 480px) {
+  .btn-start {
+    font-size: 0.9rem;
+    max-width: 180px;
+    bottom: 12px; /* Even smaller for smaller screens */
   }
-  
-  @media (max-width: 480px) {
-    .instruction-img {
-      max-height: 60vh;
-    }
-  
-    .btn-start {
-      font-size : 0.9rem;
-      max-width: 180px;
-    }
+
+  .footer {
+    height: 12px; /* Adjust footer height for smaller screens */
   }
+}
+
+@media (min-width: 769px) {
+  .instruction-page-container {
+    max-height: 100vh; /* Prevent overflow on very tall screens */
+  }
+
+  .btn-start {
+    bottom: 25px; /* Position from the bottom */
+    right: 25px; /* Position from the right */
+    left: auto; /* Override left centering */
+    transform: none; /* Remove centering transform */
+    font-size: 1.1rem; /* Slightly reduced font size for PC */
+    max-width: 200px; /* Slightly reduced max-width for PC */
+    padding: 3px 25px; /* Slightly reduced padding for PC */
+  }
+
+  .footer {
+    height: 0px; /* No footer needed on desktop */
+  }
+}
