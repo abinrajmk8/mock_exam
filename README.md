@@ -1,5 +1,7 @@
 # KEAM Mock Test
 
+### https://sfigcekkeammocktest.vercel.app/
+
 *A professional mock test platform for KEAM preparation.*
 
 ## Overview
@@ -111,13 +113,6 @@ To run the KEAM Mock Test project locally, follow these steps:
 3. **Review and Submit**:
    - Functionality for marking answers and submitting the test will be added in future updates.
 
-## Screenshots
-
-![Question Panel](https://via.placeholder.com/600x300.png?text=Question+Panel)  
-*The question panel with a modern slate theme and selectable options.*
-
-![Navigation Grid](https://via.placeholder.com/300x400.png?text=Navigation+Grid)  
-*The bottom navigation grid for jumping between questions.*
 
 ## Contributing
 
