@@ -1,6 +1,5 @@
 # KEAM Mock Test
 
-![KEAM Mock Test](https://via.placeholder.com/800x400.png?text=KEAM+Mock+Test+Screenshot)  
 *A professional mock test platform for KEAM preparation.*
 
 ## Overview
@@ -118,7 +117,7 @@ To run the KEAM Mock Test project locally, follow these steps:
 *The question panel with a modern slate theme and selectable options.*
 
 ![Navigation Grid](https://via.placeholder.com/300x400.png?text=Navigation+Grid)  
-*The right-side navigation grid for jumping between questions.*
+*The bottom navigation grid for jumping between questions.*
 
 ## Contributing
 
